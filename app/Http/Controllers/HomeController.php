@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Cliente;
 
 class HomeController extends Controller {
 
@@ -21,7 +23,11 @@ class HomeController extends Controller {
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index() {
-        return view('home')->with('location', 'inicio');
+        $c = Auth::user();
+        $i = count(Cliente::all());
+        return view('home')->with('location', 'inicio')
+                        ->with('c', $c)
+                        ->with('i', $i);
     }
 
 }

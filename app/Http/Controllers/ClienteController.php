@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Cliente;
 use Illuminate\Http\Request;
+use App\Http\Requests\ClienteRequest;
 
 class ClienteController extends Controller {
 
@@ -22,7 +23,10 @@ class ClienteController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        //
+        $clientes = Cliente::all();
+        return view('clientes.list')
+                        ->with('location', 'cliente')
+                        ->with('clientes', $clientes);
     }
 
     /**
@@ -31,7 +35,8 @@ class ClienteController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        //
+        return view('clientes.create')
+                        ->with('location', 'cliente');
     }
 
     /**
@@ -40,8 +45,23 @@ class ClienteController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
-        //
+    public function store(ClienteRequest $request) {
+        $c = New Cliente($request->all());
+        foreach ($c->attributesToArray() as $key => $value) {
+            if ($key == "email") {
+                $c->$key = $value;
+            } else {
+                $c->$key = strtoupper($value);
+            }
+        }
+        $result = $c->save();
+        if ($result) {
+            flash("El cliente <strong>" . $c->nombres . "</strong> fue almacenado de forma exitosa!")->success();
+            return redirect()->route('cliente.index');
+        } else {
+            flash("El cliente <strong>" . $c->nombres . "</strong> no pudo ser almacenado. Error: " . $result)->error();
+            return redirect()->route('cliente.index');
+        }
     }
 
     /**
@@ -60,8 +80,11 @@ class ClienteController extends Controller {
      * @param  \App\Cliente  $cliente
      * @return \Illuminate\Http\Response
      */
-    public function edit(Cliente $cliente) {
-        //
+    public function edit($id) {
+        $c = Cliente::find($id);
+        return view('clientes.edit')
+                        ->with('location', 'cliente')
+                        ->with('c', $c);
     }
 
     /**
@@ -71,8 +94,25 @@ class ClienteController extends Controller {
      * @param  \App\Cliente  $cliente
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Cliente $cliente) {
-        //
+    public function update(Request $request, $id) {
+        $c = Cliente::find($id);
+        foreach ($c->attributesToArray() as $key => $value) {
+            if (isset($request->$key)) {
+                if ($key == 'email') {
+                    $c->$key = $request->$key;
+                } else {
+                    $c->$key = strtoupper($request->$key);
+                }
+            }
+        }
+        $result = $c->save();
+        if ($result) {
+            flash("El cliente <strong>" . $c->nombres . "</strong> fue modificado de forma exitosa!")->success();
+            return redirect()->route('cliente.index');
+        } else {
+            flash("El cliente <strong>" . $c->nombres . "</strong> no pudo ser modificado. Error: " . $result)->error();
+            return redirect()->route('cliente.index');
+        }
     }
 
     /**
@@ -81,8 +121,40 @@ class ClienteController extends Controller {
      * @param  \App\Cliente  $cliente
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Cliente $cliente) {
-        //
+    public function destroy($id) {
+        $c = Cliente::find($id);
+        $result = $c->delete();
+        if ($result) {
+            flash("El cliente <strong>" . $c->nombres . "</strong> fue eliminado de forma exitosa!")->success();
+            return redirect()->route('cliente.index');
+        } else {
+            flash("El cliente <strong>" . $c->nombres . "</strong> no pudo ser eliminado. Error: " . $result)->error();
+            return redirect()->route('cliente.index');
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function consulta() {
+        return view('consulta.list')
+                        ->with('location', 'consulta');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function consultar(Request $request) {
+        $clientes = Cliente::where($request->campo, 'LIKE', '%' . $request->valor . '%')->get();
+        return view('consulta.resultado')
+                        ->with('location', 'consulta')
+                        ->with('clientes', $clientes)
+                        ->with('campo', $request->campo)
+                        ->with('valor', $request->valor);
     }
 
 }

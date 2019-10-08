@@ -74,6 +74,11 @@
                         @else
                         <li><a href="{{route('cliente.index')}}"><i class="fa fa-user"></i><span> Clientes</span></a></li>
                         @endif
+                        @if($location=='consulta')
+                        <li class="active"><a href="{{route('cliente.consulta')}}"><i class="fa fa-search"></i><span> Consulta de Clientes</span></a></li>
+                        @else
+                        <li><a href="{{route('cliente.consulta')}}"><i class="fa fa-search"></i><span> Consulta de Clientes</span></a></li>
+                        @endif
                         <form id="logout-form2" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>
@@ -85,10 +90,18 @@
                 @yield('content')
             </div>
         </div>
+        <div class="footer" style="text-align: center; width: 100%; height: auto; background-color: #ffffff; padding: 40px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); font-size: 20px;">
+            <div class="col-md-12">
+                <p>Desarrollado Por <a href="https://www.facebook.com/jorgejeisson">Jeisson Mandon</a> | Todos los derechos reservados 2019</p>
+            </div>
+        </div>
         <!-- Javascripts-->
-        <script src="{{ asset('js/jquery-2.1.4.min.js') }}"></script>
-        <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-        <script src="{{ asset('js/plugins/pace.min.js') }}"></script>
-        <script src="{{ asset('js/main.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/jquery-2.1.4.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/plugins/pace.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/main.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/plugins/jquery.dataTables.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/plugins/dataTables.bootstrap.min.js') }}"></script>
+        @yield('script')
     </body>
 </html>
