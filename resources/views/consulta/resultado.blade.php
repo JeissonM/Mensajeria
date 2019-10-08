@@ -9,6 +9,9 @@
             <li class="active"><a>Resultados de la Consulta</a></li>
         </ul>
     </div>
+    <div>
+        <a target="_blank" class="btn btn-danger btn-flat" href="{{route('cliente.consultarpdf',[$campo,$valor])}}" data-toggle="tooltip" data-placement="top" title="Imprimir Resultados de la Consulta"><i class="fa fa-lg fa-file-pdf-o"></i></a>
+    </div>
 </div>
 <div class="row">
     <div class="col-md-12">

@@ -4,7 +4,8 @@
 <div class="login-box">
     <form method="POST" class="login-form" action="{{ route('login') }}">
         @csrf
-        <h3 class="login-head"><i class="fa fa-lg fa-fw fa-user"></i>INGRESAR</h3>
+        <center><img style="padding: 0px;" src="{{asset('images/logo.png')}}" width="220px" height="150px" /></center>
+        <!--<h3 class="login-head"><i class="fa fa-lg fa-fw fa-user"></i>INGRESAR</h3>-->
         <div class="form-group">
             <label class="control-label">IDENTIFICACIÓN</label>
             <input class="form-control @error('identificacion') is-invalid @enderror" name="identificacion" value="{{ old('identificacion') }}" required autocomplete="identificacion" autofocus>
@@ -48,6 +49,7 @@
             {{ session('status') }}
         </div>
         @endif
+        <center><img style="padding: 0px;" src="{{asset('images/logo.png')}}" width="220px" height="150px" /></center>
         <h3 class="login-head"><i class="fa fa-lg fa-fw fa-lock"></i>Reestablecer Contraseña</h3>
         <div class="form-group">
             <label class="control-label">CORREO ASOCIADO A LA CUENTA</label>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Cliente;
 use Illuminate\Http\Request;
 use App\Http\Requests\ClienteRequest;
+use PDF;
 
 class ClienteController extends Controller {
 
@@ -155,6 +156,80 @@ class ClienteController extends Controller {
                         ->with('clientes', $clientes)
                         ->with('campo', $request->campo)
                         ->with('valor', $request->valor);
+    }
+
+    /*
+     * Genera listado de clientes en PDF
+     */
+
+    public function pdf() {
+        $clientes = Cliente::all();
+        if (count($clientes) > 0) {
+            $array = null;
+            foreach ($clientes as $c) {
+                $array[] = [
+                    'identificacion' => $c->identificacion,
+                    'cliente' => $c->nombres . " " . $c->apellidos,
+                    'correo' => $c->email,
+                    'telefono' => $c->telefono,
+                    'direccion' => $c->direccion
+                ];
+            }
+            $encabezado = null;
+            $cabeceras = ['IDENTIFICACIÓN', 'CLIENTE', 'CORREO', 'TELÉFONO', 'DIRECCIÓN'];
+            $hoy = getdate();
+            $fecha = $hoy["year"] . "/" . $hoy["mon"] . "/" . $hoy["mday"] . "  Hora: " . $hoy["hours"] . ":" . $hoy["minutes"] . ":" . $hoy["seconds"];
+            $date['fecha'] = $fecha;
+            $date['encabezado'] = $encabezado;
+            $date['cabeceras'] = $cabeceras;
+            $date['data'] = $array;
+            $date['nivel'] = 1;
+            $date['titulo'] = "LISTADO GENERAL DE CLIENTES";
+            $date['filtros'] = null;
+            $pdf = PDF::loadView('print_1_2_niveles', $date);
+            return $pdf->stream('reporte.pdf');
+        } else {
+            return "<p style='position: absolute; top:50%; left:50%; width:400px; margin-left:-200px; height:150px; margin-top:-150px; border:3px solid #2c3e50; background-color:#f0f3f4; padding:40px; font-size:30px; color:red;'>Su consulta no produjo resultados.<br/><br/></p>";
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function consultarpdf($campo, $valor) {
+        $clientes = Cliente::where($campo, 'LIKE', '%' . $valor . '%')->get();
+        if (count($clientes) > 0) {
+            $array = null;
+            foreach ($clientes as $c) {
+                $array[] = [
+                    'identificacion' => $c->identificacion,
+                    'cliente' => $c->nombres . " " . $c->apellidos,
+                    'correo' => $c->email,
+                    'telefono' => $c->telefono,
+                    'direccion' => $c->direccion
+                ];
+            }
+            $encabezado = [
+                'CONSULTA REALIZADA POR EL CAMPO' => $campo,
+                'CON EL VALOR' => $valor
+            ];
+            $cabeceras = ['IDENTIFICACIÓN', 'CLIENTE', 'CORREO', 'TELÉFONO', 'DIRECCIÓN'];
+            $hoy = getdate();
+            $fecha = $hoy["year"] . "/" . $hoy["mon"] . "/" . $hoy["mday"] . "  Hora: " . $hoy["hours"] . ":" . $hoy["minutes"] . ":" . $hoy["seconds"];
+            $date['fecha'] = $fecha;
+            $date['encabezado'] = $encabezado;
+            $date['cabeceras'] = $cabeceras;
+            $date['data'] = $array;
+            $date['nivel'] = 1;
+            $date['titulo'] = "LISTADO GENERAL DE CLIENTES";
+            $date['filtros'] = null;
+            $pdf = PDF::loadView('print_1_2_niveles', $date);
+            return $pdf->stream('reporte.pdf');
+        } else {
+            return "<p style='position: absolute; top:50%; left:50%; width:400px; margin-left:-200px; height:150px; margin-top:-150px; border:3px solid #2c3e50; background-color:#f0f3f4; padding:40px; font-size:30px; color:red;'>Su consulta no produjo resultados.<br/><br/></p>";
+        }
     }
 
 }

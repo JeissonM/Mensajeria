@@ -8,7 +8,10 @@
             <li class="active"><a>Gestión de Clientes</a></li>
         </ul>
     </div>
-    <div><a class="btn btn-info btn-flat" href="{{route('cliente.create')}}"><i class="fa fa-lg fa-plus"></i></a></div>
+    <div>
+        <a class="btn btn-info btn-flat" href="{{route('cliente.create')}}" data-toggle="tooltip" data-placement="top" title="Nuevo Cliente"><i class="fa fa-lg fa-plus"></i></a>
+        <a target="_blank" class="btn btn-danger btn-flat" href="{{route('cliente.pdf')}}" data-toggle="tooltip" data-placement="top" title="Imprimir Listado de Clientes"><i class="fa fa-lg fa-file-pdf-o"></i></a>
+    </div>
 </div>
 <div class="row">
     <div class="col-md-12">
